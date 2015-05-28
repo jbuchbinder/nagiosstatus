@@ -1,25 +1,9 @@
-/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
+package nagiosstatus
 
-* File Name : struct.go
-
-* Purpose :
-
-* Creation Date :
-
-* Last Modified : Wed 15 Jan 2014 06:06:27 AM UTC
-
-* Created By kiyor
-
-_._._._._._._._._._._._._._._._._._._._._.*/
-
-package nagiosToJson
-
-import ()
-
-type Mainstat struct {
-	Info          Info
-	Programstatus Programstatus
-	Hoststatus    map[string]*Hoststatus
+type NagiosStatus struct {
+	Info          Info                   `json:"info"`
+	Programstatus Programstatus          `json:"program_status"`
+	Hoststatus    map[string]*Hoststatus `json:"host_status"`
 }
 
 type Info struct {

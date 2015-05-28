@@ -1,18 +1,4 @@
-/* -.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.-.
-
-* File Name : main.go
-
-* Purpose : this app is parsing nagios.dat to json format
-
-* Creation Date : 01-13-2014
-
-* Last Modified : Fri 17 Jan 2014 01:50:19 AM UTC
-
-* Created By : Kiyor
-
-_._._._._._._._._._._._._._._._._._._._._.*/
-
-package nagiosToJson
+package nagiosstatus
 
 import (
 	"encoding/json"
@@ -26,13 +12,44 @@ import (
 )
 
 var (
-	reS      = regexp.MustCompile(`(\w+) {`)
-	reE      = regexp.MustCompile(`\t}`)
-	reHost   = regexp.MustCompile(`host_name=(.*)`)
-	reIg1    = regexp.MustCompile(`^#`)
-	reIg2    = regexp.MustCompile(`^\n`)
-	statFile = "/usr/local/nagios/var/status.dat"
+	reS               = regexp.MustCompile(`(\w+) {`)
+	reE               = regexp.MustCompile(`\t}`)
+	reHost            = regexp.MustCompile(`host_name=(.*)`)
+	reIg1             = regexp.MustCompile(`^#`)
+	reIg2             = regexp.MustCompile(`^\n`)
+	defaultStatusFile = "/usr/local/nagios/var/status.dat"
 )
+
+type NagiosStatusParser struct {
+	statusFile string
+}
+
+func (self *NagiosStatusParser) SetStatusFile(file string) {
+	self.statusFile = file
+}
+
+func (self *NagiosStatusParser) Parse() *NagiosStatus {
+	if self.statusFile == "" {
+		self.statusFile = defaultStatusFile
+	}
+	raws := parseToBlock(readFileToString(self.statusFile))
+	s := new(NagiosStatus)
+	var wg sync.WaitGroup
+	for _, v := range raws {
+		wg.Add(1)
+		go func(r rawstatus) {
+			r.blockToStruct(s, &wg)
+		}(v)
+	}
+	wg.Wait()
+	return s
+}
+
+func (self *NagiosStatusParser) ToJson(s *NagiosStatus) []byte {
+	j, err := json.MarshalIndent(s, "", "    ")
+	checkErr(err)
+	return j
+}
 
 type rawstatus struct {
 	string
@@ -89,7 +106,7 @@ func parseToBlock(input string) []rawstatus {
 	return raws
 }
 
-func (raw *rawstatus) blockToStruct(mystat *Mainstat, wg *sync.WaitGroup) {
+func (raw *rawstatus) blockToStruct(mystat *NagiosStatus, wg *sync.WaitGroup) {
 	strs := strings.Split(raw.string, " ")
 	ident := strs[0]
 	strs = strings.Split(raw.string, "\n")
@@ -173,24 +190,4 @@ func formatStr(strs []string) (map[string]string, string, string) {
 	}
 	// 	fmt.Println(host, res)
 	return res, host, desc
-}
-
-func SetStatFile(file string) {
-	statFile = file
-}
-
-func GetStat() []byte {
-	raws := parseToBlock(readFileToString(statFile))
-	mystat := new(Mainstat)
-	var wg sync.WaitGroup
-	for _, v := range raws {
-		wg.Add(1)
-		go func(r rawstatus) {
-			r.blockToStruct(mystat, &wg)
-		}(v)
-	}
-	wg.Wait()
-	j, err := json.MarshalIndent(mystat, "", "    ")
-	checkErr(err)
-	return j
 }
