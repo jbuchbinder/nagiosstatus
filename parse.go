@@ -20,14 +20,21 @@ var (
 	defaultStatusFile = "/usr/local/nagios/var/status.dat"
 )
 
+// NagiosStatusParser is the parent object of this package, and serves to
+// expose methods allowing a Nagios status.dat file to be parsed into an
+// internal object representation.
 type NagiosStatusParser struct {
 	statusFile string
 }
 
+// SetStatusFile sets the name of the Nagios status.dat file which is
+// read by the package. This defaults to "/usr/local/nagios/var/status.dat".
 func (self *NagiosStatusParser) SetStatusFile(file string) {
 	self.statusFile = file
 }
 
+// Parse parses the specified Nagios status.dat file and creates an internal
+// object representation.
 func (self *NagiosStatusParser) Parse() *NagiosStatus {
 	if self.statusFile == "" {
 		self.statusFile = defaultStatusFile
@@ -45,6 +52,9 @@ func (self *NagiosStatusParser) Parse() *NagiosStatus {
 	return s
 }
 
+// ToJson returns a []byte object containing the JSON representation of
+// a parsed Nagios status.dat file. It is a convenience method to pretty
+// print the data.
 func (self *NagiosStatusParser) ToJson(s *NagiosStatus) []byte {
 	j, err := json.MarshalIndent(s, "", "    ")
 	checkErr(err)
