@@ -3,6 +3,9 @@ go:
   - 1.3
   - 1.4
   - tip
-install:
+before_script:
+  - go get github.com/kiyor/gourl/lib
+  - go get github.com/kiyor/nagiosToJson
   - go get -d
+script:
   - go build
