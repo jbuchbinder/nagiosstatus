@@ -2,8 +2,8 @@ package nagiosstatus
 
 type NagiosStatus struct {
 	Info          Info                   `json:"info"`
-	Programstatus Programstatus          `json:"program_status"`
-	Hoststatus    map[string]*Hoststatus `json:"host_status"`
+	ProgramStatus ProgramStatus          `json:"program_status"`
+	HostStatus    map[string]*HostStatus `json:"host_status"`
 }
 
 type Info struct {
@@ -15,7 +15,7 @@ type Info struct {
 	Version           string `json:"version"`
 }
 
-type Programstatus struct {
+type ProgramStatus struct {
 	Active_host_checks_enabled           string `json:"active_host_checks_enabled"`
 	Active_ondemand_host_check_stats     string `json:"active_ondemand_host_check_stats"`
 	Active_ondemand_service_check_stats  string `json:"active_ondemand_service_check_stats"`
@@ -59,7 +59,7 @@ type Programstatus struct {
 	Used_external_command_buffer_slots   string `json:"used_external_command_buffer_slots"`
 }
 
-type Hoststatus struct {
+type HostStatus struct {
 	Acknowledgement_type          string                    `json:"acknowledgement_type"`
 	Active_checks_enabled         string                    `json:"active_checks_enabled"`
 	Check_command                 string                    `json:"check_command"`
@@ -111,10 +111,10 @@ type Hoststatus struct {
 	Scheduled_downtime_depth      string                    `json:"scheduled_downtime_depth"`
 	Should_be_scheduled           string                    `json:"should_be_scheduled"`
 	State_type                    string                    `json:"state_type"`
-	Servicestatus                 map[string]*Servicestatus `json:"servicestatus"`
+	ServiceStatus                 map[string]*ServiceStatus `json:"servicestatus"`
 }
 
-type Servicestatus struct {
+type ServiceStatus struct {
 	Acknowledgement_type          string `json:"acknowledgement_type"`
 	Active_checks_enabled         string `json:"active_checks_enabled"`
 	Check_command                 string `json:"check_command"`

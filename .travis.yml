@@ -5,7 +5,6 @@ go:
   - tip
 before_script:
   - go get github.com/kiyor/gourl/lib
-  - go get github.com/kiyor/nagiosToJson
   - go get -d
 script:
   - go build

@@ -128,25 +128,25 @@ func (raw *rawstatus) blockToStruct(mystat *NagiosStatus, wg *sync.WaitGroup) {
 		stat[k] = interface{}(v)
 	}
 	if ident == "hoststatus" {
-		if len(mystat.Hoststatus) == 0 {
-			mystat.Hoststatus = make(map[string]*Hoststatus)
+		if len(mystat.HostStatus) == 0 {
+			mystat.HostStatus = make(map[string]*HostStatus)
 		}
-		var tempstat Hoststatus
+		var tempstat HostStatus
 		a, err := json.Marshal(stat)
 		checkErr(err)
 		err = json.Unmarshal(a, &tempstat)
 		checkErr(err)
-		mystat.Hoststatus[host] = &tempstat
-	} else if ident == "servicestatus" && mystat.Hoststatus[host] != nil {
-		if len(mystat.Hoststatus[host].Servicestatus) == 0 {
-			mystat.Hoststatus[host].Servicestatus = make(map[string]*Servicestatus)
+		mystat.HostStatus[host] = &tempstat
+	} else if ident == "servicestatus" && mystat.HostStatus[host] != nil {
+		if len(mystat.HostStatus[host].ServiceStatus) == 0 {
+			mystat.HostStatus[host].ServiceStatus = make(map[string]*ServiceStatus)
 		}
-		var tempstat Servicestatus
+		var tempstat ServiceStatus
 		a, err := json.Marshal(stat)
 		checkErr(err)
 		err = json.Unmarshal(a, &tempstat)
 		checkErr(err)
-		mystat.Hoststatus[host].Servicestatus[desc] = &tempstat
+		mystat.HostStatus[host].ServiceStatus[desc] = &tempstat
 	} else if ident == "info" {
 		var tempstat Info
 		a, err := json.Marshal(stat)
@@ -155,12 +155,12 @@ func (raw *rawstatus) blockToStruct(mystat *NagiosStatus, wg *sync.WaitGroup) {
 		checkErr(err)
 		mystat.Info = tempstat
 	} else if ident == "programstatus" {
-		var tempstat Programstatus
+		var tempstat ProgramStatus
 		a, err := json.Marshal(stat)
 		checkErr(err)
 		err = json.Unmarshal(a, &tempstat)
 		checkErr(err)
-		mystat.Programstatus = tempstat
+		mystat.ProgramStatus = tempstat
 	}
 	wg.Done()
 }
