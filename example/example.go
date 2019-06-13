@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"github.com/jbuchbinder/nagiosstatus"
 	"github.com/kiyor/gourl/lib"
-	nagiosstatus "../"
 	"io/ioutil"
 	"log"
 	"strconv"
@@ -17,7 +17,7 @@ var (
 	mute    *bool   = flag.Bool("mute", false, "enable show mute info")
 	ack     *bool   = flag.Bool("ack", false, " enable show ack")
 	url     *string = flag.String("url", "", "get status file by url")
-	n nagiosstatus.NagiosStatusParser
+	n       nagiosstatus.NagiosStatusParser
 )
 
 func init() {
